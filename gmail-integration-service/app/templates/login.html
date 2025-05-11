@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body style="text-align: center; padding-top: 50px;">
+    <h1>Spam Detector Login</h1>
+    <a href="/login">
+        <button>Sign in with Google</button>
+    </a>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+</body>
+</html>

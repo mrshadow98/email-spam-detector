@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.5.0
+    depends_on:
+      - kafka
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+
+  redis:
+    image: redis:7.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  gmail-integration-service:
+    build:
+      context: ./gmail-integration-service
+    volumes:
+      - ./gmail-integration-service:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - kafka
+      - postgres
+      - redis
+    env_file:
+      - .env
+
+#  bloom-filter-service:
+#    build:
+#      context: ./bloom-filter-service
+#    depends_on:
+#      - kafka
+#      - redis
+#    env_file:
+#      - .env
+#
+#  spam-detector-service:
+#    build:
+#      context: ./spam-detector-service
+#    depends_on:
+#      - kafka
+#    env_file:
+#      - .env
+#
+#  email-processor:
+#    build:
+#      context: ./email-processor
+#    depends_on:
+#      - kafka
+#    env_file:
+#      - .env
+#
+#  action-handler-service:
+#    build:
+#      context: ./action-handler-service
+#    depends_on:
+#      - kafka
+#      - postgres
+#    env_file:
+#      - .env
+
+volumes:
+  redis_data:
+  pg_data:
+
+networks:
+  default:
+    name: spam-detector-network
