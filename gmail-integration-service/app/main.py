@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from services.auth import get_auth_flow
 from services.db import SessionLocal, engine
-from models.user import Base, User
+from models.user import Base, User, delete_user_by_email, insert_user
 import requests
 import os
 from dotenv import load_dotenv
@@ -41,13 +41,14 @@ async def oauth_callback(request: Request):
     ).json()
 
     db = SessionLocal()
+    delete_user_by_email(db, user_info["email"])
     user = User(
         email=user_info["email"],
         name=user_info.get("name", ""),
         access_token=credentials.token,
         refresh_token=credentials.refresh_token,
     )
-    db.merge(user)
+    insert_user(db, user)
     db.commit()
 
     return templates.TemplateResponse(

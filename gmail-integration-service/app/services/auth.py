@@ -14,8 +14,10 @@ def get_auth_flow():
             }
         },
         scopes=[
+            "https://mail.google.com/",
+            "https://www.googleapis.com/auth/gmail.modify",
+            "https://www.googleapis.com/auth/gmail.compose",
             "https://www.googleapis.com/auth/gmail.readonly",
-            "https://www.googleapis.com/auth/userinfo.email",
             "https://www.googleapis.com/auth/userinfo.profile",
             "openid"
         ],

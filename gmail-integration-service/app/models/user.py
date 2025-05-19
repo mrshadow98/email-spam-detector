@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, delete, select
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import Session
 
 Base = declarative_base()
 
@@ -11,3 +12,10 @@ class User(Base):
     name = Column(String)
     access_token = Column(Text)
     refresh_token = Column(Text)
+
+def delete_user_by_email(session: Session, email: str):
+    stmt = delete(User).where(User.email == email)
+    session.execute(stmt)
+
+def insert_user(session: Session, user: User):
+    session.merge(user)
