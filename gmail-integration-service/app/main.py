@@ -3,6 +3,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from services.auth import get_auth_flow
 from services.db import SessionLocal, engine
+from services.producer import produce_auth_event
 from models.user import Base, User, delete_user_by_email, insert_user
 import requests
 import os
@@ -50,7 +51,8 @@ async def oauth_callback(request: Request):
     )
     insert_user(db, user)
     db.commit()
-
+    print("Generating kafka event")
+    produce_auth_event(user)
     return templates.TemplateResponse(
         "login.html", {"request": request, "message": f"Welcome, {user_info['email']}!"}
     )

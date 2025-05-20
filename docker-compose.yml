@@ -79,13 +79,17 @@ services:
 #    env_file:
 #      - .env
 #
-#  email-processor:
-#    build:
-#      context: ./email-processor
-#    depends_on:
-#      - kafka
-#    env_file:
-#      - .env
+  email-processor:
+    build:
+      context: ./email-processor
+    volumes:
+      - ./email-processor:/app
+    depends_on:
+      - kafka
+      - postgres
+      - redis
+    env_file:
+      - .env
 #
 #  action-handler-service:
 #    build:
