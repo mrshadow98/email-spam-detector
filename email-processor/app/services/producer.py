@@ -14,12 +14,13 @@ def delivery_report(err, msg):
     else:
         print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
 
-def produce_auth_event(user):
+def produce_email_event(email, user):
     event_payload = {
         "email": user.email,
         "name": user.name,
-        "event": "USER_LOGGED_IN"
+        "raw_email": email,
+        "event": "EMAIL_LOADED"
     }
 
-    producer.produce("auth-events", json.dumps(event_payload).encode("utf-8"), callback=delivery_report)
+    producer.produce("email-events", json.dumps(event_payload).encode("utf-8"), callback=delivery_report)
     producer.flush()

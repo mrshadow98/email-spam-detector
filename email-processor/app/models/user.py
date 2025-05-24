@@ -19,3 +19,8 @@ def delete_user_by_email(session: Session, email: str):
 
 def insert_user(session: Session, user: User):
     session.merge(user)
+
+def get_user_by_email(session: Session, email: str) -> User | None:
+    stmt = select(User).where(User.email == email)
+    result = session.execute(stmt).scalar_one_or_none()
+    return result

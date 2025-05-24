@@ -1,15 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <title>Spam Detector Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .login-container {
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 0 14px rgba(0, 0, 0, 0.1);
+        }
+        .btn-google {
+            background-color: #4285F4;
+            color: white;
+        }
+        .btn-google:hover {
+            background-color: #357ae8;
+        }
+        .step-list {
+            text-align: left;
+            margin-top: 20px;
+        }
+    </style>
 </head>
-<body style="text-align: center; padding-top: 50px;">
-    <h1>Spam Detector Login</h1>
-    <a href="/login">
-        <button>Sign in with Google</button>
-    </a>
-    {% if message %}
-        <p>{{ message }}</p>
-    {% endif %}
+<body>
+
+<div class="container">
+    <div class="login-container text-center">
+        <h2 class="mb-4">Spam Detector</h2>
+
+        <a href="/login" class="btn btn-google w-100 mb-4">
+            <i class="bi bi-google"></i> Sign in with Google
+        </a>
+
+        <div class="step-list">
+            <h5 class="text-start">How it works:</h5>
+            <ol class="text-start">
+                <li>You need to log in with your Google account.</li>
+                <li>Grant permission to access your Gmail inbox.</li>
+                <li>Our software will securely scan your existing emails.</li>
+                <li>Using AI, it will identify spam and take one of the following actions:
+                    <ul>
+                        <li>Move spam to the Spam folder</li>
+                        <li>Label it as "Spam"</li>
+                        <li>Delete it (based on what Gmail API allows)</li>
+                    </ul>
+                </li>
+                <li>Future incoming emails will be filtered automatically in real-time.</li>
+            </ol>
+        </div>
+
+        {% if message %}
+            <div class="alert alert-warning mt-3" role="alert">
+                {{ message }}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </body>
 </html>
