@@ -4,15 +4,12 @@ from fastapi.templating import Jinja2Templates
 from services.auth import get_auth_flow
 from services.db import SessionLocal, engine
 from services.producer import produce_auth_event
-from models.user import Base, User, delete_user_by_email, insert_user
+from models.user import User, delete_user_by_email, insert_user
 import requests
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
-# DB setup
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
