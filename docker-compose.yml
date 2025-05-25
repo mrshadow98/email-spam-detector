@@ -62,23 +62,26 @@ services:
     env_file:
       - .env
 
-#  bloom-filter-service:
-#    build:
-#      context: ./bloom-filter-service
-#    depends_on:
-#      - kafka
-#      - redis
-#    env_file:
-#      - .env
-#
-#  spam-detector-service:
-#    build:
-#      context: ./spam-detector-service
-#    depends_on:
-#      - kafka
-#    env_file:
-#      - .env
-#
+  bloom-filter-service:
+    build:
+      context: ./bloom-filter-service
+    depends_on:
+      - kafka
+      - postgres
+      - redis
+    env_file:
+      - .env
+
+  spam-detector-service:
+    build:
+      context: ./spam-detector-service
+    depends_on:
+      - kafka
+      - postgres
+      - redis
+    env_file:
+      - .env
+
   email-processor:
     build:
       context: ./email-processor
