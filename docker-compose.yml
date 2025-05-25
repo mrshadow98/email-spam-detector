@@ -65,6 +65,8 @@ services:
   bloom-filter-service:
     build:
       context: ./bloom-filter-service
+    volumes:
+      - ./bloom-filter-service:/app
     depends_on:
       - kafka
       - postgres
@@ -75,6 +77,8 @@ services:
   spam-detector-service:
     build:
       context: ./spam-detector-service
+    volumes:
+      - ./spam-detector-service:/app
     depends_on:
       - kafka
       - postgres
@@ -93,15 +97,30 @@ services:
       - redis
     env_file:
       - .env
-#
-#  action-handler-service:
-#    build:
-#      context: ./action-handler-service
-#    depends_on:
-#      - kafka
-#      - postgres
-#    env_file:
-#      - .env
+
+  action-handler-service:
+    build:
+      context: ./action-handler-service
+    volumes:
+      - ./action-handler-service:/app
+    depends_on:
+      - kafka
+      - postgres
+      - redis
+    env_file:
+      - .env
+
+  migrations:
+    image: email-spam-detector-bloom-filter-service:latest
+    command: ["python", "manage.py"]
+    volumes:
+      - ./bloom-filter-service:/app
+    depends_on:
+      - kafka
+      - postgres
+      - redis
+    env_file:
+      - .env
 
 volumes:
   redis_data:

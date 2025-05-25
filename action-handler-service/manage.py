@@ -2,7 +2,7 @@ import os
 import sys
 
 from dotenv import load_dotenv
-from app.models import Base
+from app.models.user import Base
 from app.models.spam_email_hash import SpamEmailHash
 # Add the root directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))

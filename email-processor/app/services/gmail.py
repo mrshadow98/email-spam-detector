@@ -4,8 +4,8 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from ..models.user import User
-from db import SessionLocal
-from producer import produce_email_event
+from .db import SessionLocal
+from .producer import produce_email_event
 
 def get_gmail_service(user: User):
     creds = Credentials(

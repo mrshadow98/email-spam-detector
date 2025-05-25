@@ -2,7 +2,7 @@ import os
 import sys
 
 from dotenv import load_dotenv
-from models.user import Base
+from models import Base
 from services.db import engine
 # Add the root directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
