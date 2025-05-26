@@ -4,15 +4,24 @@ from ..models.user import User
 from .redis_bloom_filter import RedisBloomFilter
 from .producer import produce_bloom_event
 
+def get_option_from_email(email_msg: dict, option: str="subject") -> str:
+    if type(email_msg) == dict:
+        headers = email_msg.get('payload', {}).get('headers', [])
+        if type(headers) != list:
+            headers = [headers]
+        subject = ""
+        for h in headers:
+            if h.get("name", "").lower() == option:
+                subject = h.get("value", "")
+        return subject
+    return ""
 
-def spam_email_hash(email_msg: dict) -> str:
-    subject = email_msg.get('payload', {}).get('headers', {}).get('Subject', '')
+
+def spam_email_hash(email_msg: dict) -> str | None:
+    subject =get_option_from_email(email_msg)
+    sender =get_option_from_email(email_msg, "sender")
     body = email_msg.get('snippet', '')  # Or full text if available
-    from_email = next(
-        (h['value'] for h in email_msg.get('payload', {}).get('headers', []) if h['name'].lower() == 'from'),
-        ''
-    )
-    combined = f"{subject.strip()}|{body.strip()}|{from_email.strip()}"
+    combined = f"{subject.strip()}|{body.strip()}|{sender.strip()}"
     return hashlib.sha256(combined.encode()).hexdigest()
 
 

@@ -14,7 +14,7 @@ conf = {
     'group.id': 'auth-event-group-test',
     'auto.offset.reset': 'earliest',
 }
-KAFKA_TOPIC = "email-events"
+KAFKA_TOPIC = "bloom-events"
 # Redis Setup
 redis_client = redis.Redis(host=os.getenv('REDIS_HOST'), port=6379, db=0)
 bloom = RedisBloomFilter(redis_client)
@@ -25,7 +25,7 @@ preload_bloom_from_db(session, bloom)
 def handle_email_event(event_data):
     print("Handling event:", event_data)
     user = get_user_by_email(session, event_data["email"])
-    process_email(user, event_data["raw_email"], bloom)
+    # process_email(user, event_data["raw_email"], bloom)
     # Store to Redis, log it, etc.
 
 def start_consumer():
