@@ -25,7 +25,6 @@ def handle_email_event(event_data):
             produce_bloom_event(email=event_data["raw_email"], user=user)
 
 
-
 def start_consumer():
     consumer = Consumer(conf)
 
