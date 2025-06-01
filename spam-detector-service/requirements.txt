@@ -19,3 +19,5 @@ python-dotenv==1.1.0
 requests==2.32.3
 unzip==1.0.0
 pybloom_live==4.0.0
+scikit_learn==1.6.1
+pandas==2.2.3

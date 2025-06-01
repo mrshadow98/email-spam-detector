@@ -14,15 +14,14 @@ def delivery_report(err, msg):
     else:
         print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
 
-def produce_bloom_event(email, user, is_spam_bloom = False):
+def produce_bloom_event(email, user):
     event_payload = {
         "email": user.email,
         "name": user.name,
         "raw_email": email,
-        "event": "BLOOM_FILTERED",
-        "is_spam_bloom": is_spam_bloom
+        "event": "SPAM_DETECTED",
     }
 
-    producer.produce("bloom-events", json.dumps(event_payload).encode("utf-8"), callback=delivery_report)
+    producer.produce("detection-events", json.dumps(event_payload).encode("utf-8"), callback=delivery_report)
     producer.flush()
 
