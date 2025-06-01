@@ -11,8 +11,6 @@ producer = Producer(conf)
 def delivery_report(err, msg):
     if err is not None:
         print(f"Delivery failed: {err}")
-    else:
-        print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
 
 def produce_bloom_event(email, user, is_spam_bloom = False):
     event_payload = {
