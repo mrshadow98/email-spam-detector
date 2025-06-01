@@ -24,3 +24,19 @@ def get_gmail_service(user: User):
 
     return build("gmail", "v1", credentials=creds)
 
+
+def mark_message_as_spam(user: User, message_id: str):
+    service = get_gmail_service(user)
+
+    try:
+        service.users().messages().modify(
+            userId="me",
+            id=message_id,
+            body={
+                "addLabelIds": ["SPAM"],
+                "removeLabelIds": []  # Optional, include if you want to remove other labels
+            }
+        ).execute()
+        print(f"Message {message_id} marked as SPAM.")
+    except Exception as e:
+        print(f"Failed to mark message {message_id} as SPAM: {e}")

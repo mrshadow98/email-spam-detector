@@ -3,30 +3,29 @@ import os
 import redis
 
 from ..models.user import get_user_by_email
-from ..services.bloom import process_email, preload_bloom_from_db
 from .redis_bloom_filter import RedisBloomFilter
 from .db import SessionLocal
+from .bloom import add_spam_email_to_db
 from confluent_kafka import Consumer
 import json
+from .gmail import mark_message_as_spam
 
 conf = {
     'bootstrap.servers': os.getenv("KAFKA_BROKER", "kafka:9092"),
     'group.id': 'auth-event-group-test',
     'auto.offset.reset': 'earliest',
 }
-KAFKA_TOPIC = "bloom-events"
+KAFKA_TOPIC = "spam-events"
 # Redis Setup
 redis_client = redis.Redis(host=os.getenv('REDIS_HOST'), port=6379, db=0)
 bloom = RedisBloomFilter(redis_client)
 session = SessionLocal()
-# Load from Postgres on startup
-preload_bloom_from_db(session, bloom)
 
 def handle_email_event(event_data):
     print("Handling event:", event_data)
     user = get_user_by_email(session, event_data["email"])
-    # process_email(user, event_data["raw_email"], bloom)
-    # Store to Redis, log it, etc.
+    add_spam_email_to_db(event_data["raw_email"], bloom, session)
+    mark_message_as_spam(user, event_data["raw_email"]["id"])
 
 def start_consumer():
     consumer = Consumer(conf)

@@ -1,8 +1,6 @@
 import hashlib
 from ..models.spam_email_hash import SpamEmailHash
-from ..models.user import User
 from .redis_bloom_filter import RedisBloomFilter
-from .producer import produce_bloom_event
 
 
 def spam_email_hash(email_msg: dict) -> str:
@@ -21,19 +19,6 @@ def preload_bloom_from_db(session, bloom: RedisBloomFilter):
     for (h,) in existing_hashes:
         if h not in bloom:
             bloom.add(h)
-
-
-def process_email(user: User, email_msg: dict, bloom: RedisBloomFilter):
-    h = spam_email_hash(email_msg)
-
-    if h in bloom:
-        print("Spam detected. Produce spam detected event.")
-        produce_bloom_event(email_msg, user, True)
-        return
-
-    print("No spam found in bloom, send to AI model. Processing...")
-    produce_bloom_event(email_msg, user)
-
 
 def add_spam_email_to_db(email_msg: dict, bloom: RedisBloomFilter, session):
     h = spam_email_hash(email_msg)
